@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -52,21 +53,22 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
-				sidebar: {
-					DEFAULT: 'hsl(var(--sidebar-background))',
-					foreground: 'hsl(var(--sidebar-foreground))',
-					primary: 'hsl(var(--sidebar-primary))',
-					'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-					accent: 'hsl(var(--sidebar-accent))',
-					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-					border: 'hsl(var(--sidebar-border))',
-					ring: 'hsl(var(--sidebar-ring))'
+				docflow: {
+					dark: 'hsl(var(--docflow-dark))',
+					blue: 'hsl(var(--docflow-blue))',
+					light: 'hsl(var(--docflow-light))',
+					cyan: 'hsl(var(--docflow-cyan))',
+					purple: 'hsl(var(--docflow-purple))',
 				}
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)'
+			},
+			fontFamily: {
+				sans: ['Inter', 'system-ui', 'sans-serif'],
+				mono: ['JetBrains Mono', 'monospace'],
 			},
 			keyframes: {
 				'accordion-down': {
@@ -84,11 +86,41 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				slideUp: {
+					from: {
+						opacity: '0',
+						transform: 'translateY(30px) skewY(10deg)'
+					},
+					to: {
+						opacity: '1',
+						transform: 'translateY(0) skewY(0)'
+					}
+				},
+				float: {
+					'0%, 100%': {
+						transform: 'translateY(0px)'
+					},
+					'50%': {
+						transform: 'translateY(-20px)'
+					}
+				},
+				glow: {
+					from: {
+						boxShadow: '0 0 20px hsl(187 100% 50% / 0.3)'
+					},
+					to: {
+						boxShadow: '0 0 30px hsl(187 100% 50% / 0.6), 0 0 40px hsl(262 70% 58% / 0.3)'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'slide-up': 'slideUp 0.6s ease-out',
+				'slide-up-delayed': 'slideUp 0.6s ease-out 0.4s both',
+				'float': 'float 6s ease-in-out infinite',
+				'glow': 'glow 2s ease-in-out infinite alternate',
 			}
 		}
 	},
