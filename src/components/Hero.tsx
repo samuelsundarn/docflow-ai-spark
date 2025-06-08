@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, FileSearch, ScanEye, FileSignature, SendToBack, ChevronDown } from 'lucide-react';
@@ -25,7 +24,7 @@ const Hero = () => {
   ];
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-background via-background to-docflow-blue/5">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-background via-background to-docflow-blue/5 pb-8">
       {/* Background Elements */}
       <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
       
@@ -50,11 +49,11 @@ const Hero = () => {
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 text-center z-10">
+      <div className="container mx-auto px-4 text-center z-10 pt-28">
         <div className="max-w-4xl mx-auto">
           {/* Main Headline */}
           <div className="mb-8">
-            <div className="flex flex-wrap justify-center items-center gap-4 text-4xl md:text-6xl lg:text-7xl font-bold leading-tight">
+            <div className="flex flex-wrap justify-center items-center gap-4 text-4xl md:text-6xl lg:text-7xl font-bold leading-normal">
               {keywords.map((keyword, index) => (
                 <span
                   key={keyword}

@@ -1,32 +1,39 @@
-
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Mail, Lock, ArrowRight } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Mail, Lock, ArrowRight, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 const Login = () => {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
+    setError('');
+
     // Simulate login process
     setTimeout(() => {
       setIsLoading(false);
-      // Redirect to dashboard
-      window.location.href = '/dashboard';
-    }, 2000);
+      if (username === 'admin' && password === 'admin') {
+        navigate('/admin');
+      } else if (username && password) {
+        navigate('/dashboard');
+      } else {
+        setError('Invalid username or password');
+      }
+    }, 1500);
   };
 
   const handleOAuthLogin = (provider: string) => {
-    console.log(`Login with ${provider}`);
     // Simulate OAuth login
     setTimeout(() => {
-      window.location.href = '/dashboard';
+      navigate('/dashboard');
     }, 1000);
   };
 
@@ -46,11 +53,11 @@ const Login = () => {
           </Link>
         </div>
 
-        {/* Login Form */}
-        <div className="docflow-card p-8">
+        {/* Login Form with animation */}
+        <div className="docflow-card p-8 animate-slide-up shadow-xl">
           <div className="text-center mb-6">
-            <h1 className="text-2xl font-bold mb-2">Welcome Back</h1>
-            <p className="text-foreground/70">Sign in to access your document pipeline</p>
+            <h1 className="text-2xl font-bold mb-2">Sign in to your account</h1>
+            <p className="text-foreground/70">User & Admin Login</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
