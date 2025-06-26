@@ -57,7 +57,43 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const createTestUsers = async () => {
+    try {
+      // Check if admin user exists
+      const { data: adminData } = await supabase.auth.admin.listUsers();
+      const adminExists = adminData.users?.some(u => u.email === 'admin_demo@docflow.ai');
+      
+      if (!adminExists) {
+        console.log('Creating admin test user...');
+        await supabase.auth.admin.createUser({
+          email: 'admin_demo@docflow.ai',
+          password: 'admin123',
+          email_confirm: true,
+          user_metadata: { full_name: 'Admin Demo' }
+        });
+      }
+
+      // Check if regular user exists
+      const userExists = adminData.users?.some(u => u.email === 'user_demo@docflow.ai');
+      
+      if (!userExists) {
+        console.log('Creating user test user...');
+        await supabase.auth.admin.createUser({
+          email: 'user_demo@docflow.ai',
+          password: 'user123',
+          email_confirm: true,
+          user_metadata: { full_name: 'User Demo' }
+        });
+      }
+    } catch (error) {
+      console.log('Note: Test users may need to be created manually in Supabase Dashboard');
+    }
+  };
+
   useEffect(() => {
+    // Create test users on component mount
+    createTestUsers();
+
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
@@ -99,7 +135,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signIn = async (email: string, password: string) => {
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      setLoading(true);
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
@@ -107,21 +144,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (error) {
         console.error('Sign in error:', error);
         toast.error(error.message || 'Sign in failed');
+        return { error };
       }
-      
-      return { error };
+
+      console.log('Sign in successful:', data.user?.email);
+      return { error: null };
     } catch (error) {
       console.error('Sign in error:', error);
       toast.error('An unexpected error occurred during sign in');
       return { error };
+    } finally {
+      setLoading(false);
     }
   };
 
   const signUp = async (email: string, password: string, fullName?: string) => {
     try {
+      setLoading(true);
       const redirectUrl = `${window.location.origin}/`;
       
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -135,13 +177,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (error) {
         console.error('Sign up error:', error);
         toast.error(error.message || 'Sign up failed');
+        return { error };
       }
-      
-      return { error };
+
+      console.log('Sign up successful:', data.user?.email);
+      return { error: null };
     } catch (error) {
       console.error('Sign up error:', error);
       toast.error('An unexpected error occurred during sign up');
       return { error };
+    } finally {
+      setLoading(false);
     }
   };
 
