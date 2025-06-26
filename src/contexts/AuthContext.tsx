@@ -61,16 +61,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        console.log('Auth state changed:', event, session?.user?.email);
         setSession(session);
         setUser(session?.user ?? null);
         
         if (session?.user) {
-          // Fetch profile data
+          // Fetch profile data with a slight delay to ensure trigger has executed
           setTimeout(async () => {
             const profileData = await fetchProfile(session.user.id);
             setProfile(profileData);
             setLoading(false);
-          }, 0);
+          }, 100);
         } else {
           setProfile(null);
           setLoading(false);
@@ -97,39 +98,51 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    
-    if (error) {
-      toast.error('Sign in failed: ' + error.message);
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      
+      if (error) {
+        console.error('Sign in error:', error);
+        toast.error(error.message || 'Sign in failed');
+      }
+      
+      return { error };
+    } catch (error) {
+      console.error('Sign in error:', error);
+      toast.error('An unexpected error occurred during sign in');
+      return { error };
     }
-    
-    return { error };
   };
 
   const signUp = async (email: string, password: string, fullName?: string) => {
-    const redirectUrl = `${window.location.origin}/`;
-    
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: redirectUrl,
-        data: {
-          full_name: fullName || '',
+    try {
+      const redirectUrl = `${window.location.origin}/`;
+      
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: redirectUrl,
+          data: {
+            full_name: fullName || '',
+          }
         }
+      });
+      
+      if (error) {
+        console.error('Sign up error:', error);
+        toast.error(error.message || 'Sign up failed');
       }
-    });
-    
-    if (error) {
-      toast.error('Sign up failed: ' + error.message);
-    } else {
-      toast.success('Check your email to confirm your account!');
+      
+      return { error };
+    } catch (error) {
+      console.error('Sign up error:', error);
+      toast.error('An unexpected error occurred during sign up');
+      return { error };
     }
-    
-    return { error };
   };
 
   const signOut = async () => {
